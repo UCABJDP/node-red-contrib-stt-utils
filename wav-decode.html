@@ -1,0 +1,28 @@
+<script type="text/javascript">
+    RED.nodes.registerType('wav-decode',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "trigger.png",
+        label: function() {
+            return this.name||"wav-decode";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="wav-decode">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="wav-decode">
+    <p>The node takes a .wav file stored in a single buffer, and returns the audio data stored within.</p>
+	<p>Payload: Buffer containing the extracted audio data</p>
+	<p>Format: Information about the decoded wav file format</p>
+</script>

@@ -1,0 +1,79 @@
+<script type="text/javascript">
+    RED.nodes.registerType('node-vad',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+			mode: {value:"Normal"},
+			samplerate: {value:"16000"},
+			debounce: {value: 1000, required: true, validate: function(data){return (parseInt(data) && (parseInt(data)>0));}}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "trigger.png",
+        label: function() {
+            return this.name||"node-vad";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="node-vad">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+	<div class="form-row">
+		<label for="node-input-mode"><i class="icon-tag"></i> VAD Mode</label>
+		<select id="node-input-mode">
+			<option value="Normal">Normal</option>
+			<option value="LowBitrate">Low Bitrate</option>
+			<option value="Aggressive">Aggressive</option>
+			<option value="VeryAggressive">Very Aggressive</option>
+		</select>
+	</div>
+	<div class="form-row">
+		<label for="node-input-samplerate"><i class="icon-tag"></i> Sample Rate</label>
+		<select id="node-input-samplerate">
+			<option value="8000">8000</option>
+			<option value="16000">16000</option>
+			<option value="32000">32000</option>
+			<option value="48000">48000</option>
+		</select>
+	</div>
+	<div class="form-row">
+		<label for="node-input-debounce"><i class="icon-tag"></i> Debounce (ms)</label>
+		<input type="number" id="node-input-debounce" min="0" step="1">
+	</div>
+</script>
+
+<script type="text/html" data-help-name="node-vad">
+    <p>NodeRED adaptor for the node-vad module. Filters out silence from given 16-bit PCM mono-channel audio.</p>
+
+	<h3>Inputs</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">buffer</span>
+			</dt>
+			<dd>Buffer containing the audio to be filtered, in 16-bit PCM mono-channel form.</dd>
+		</dl>
+
+	 <h3>Outputs</h3>
+		 <ol class="node-ports">
+			 <li>Standard output
+				 <dl class="message-properties">
+					 <dt>payload <span class="property-type">buffer</span></dt>
+					 <dd>Buffer containing the converted audio.</dd>
+					 <dt class="optional">complete<span class="property-type">boolean</span></dt>
+					 <dd>Emitted only on the end of an utterance or on timeout, always true. For use with the join node, or similar.</dd>
+				 </dl>
+			 </li>
+		 </ol>
+
+	<h3>Details</h3>
+		<p>If the input or output type is is of a 32-bit float, the signed and bitdepth options will be ignored, as those options are only relevant to integer conversions.</p>
+		<p>The default endianness of the OS is used for conversion.</p>
+	<h3>References</h3>
+		<ul>
+			<li><a href="https://github.com/raymond-h/pcm-format">pcm-audio</a> - the github repository for the pcm-format module</li>
+		</ul>
+</script>

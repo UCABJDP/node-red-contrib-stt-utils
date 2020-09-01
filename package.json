@@ -1,0 +1,30 @@
+{
+  "name": "node-red-contrib-stt-utils",
+  "version": "0.0.1",
+  "description": "A collection of nodes for localised audio processing",
+  "main": "lower-case.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "audio",
+    "sst",
+    "node-red"
+  ],
+  "author": "Joshua Pimm",
+  "license": "ISC",
+  "node-red": {
+    "nodes": {
+      "vad": "vad.js",
+      "wav-decode": "wav-decode.js",
+      "pcm-format": "pcm-format.js",
+      "sst": "stt.js"
+    }
+  },
+  "dependencies": {
+    "deepspeech": "^0.8.2",
+    "node-vad": "^1.1.4",
+    "pcm-format": "^1.1.2",
+    "wav": "^1.0.2"
+  }
+}
