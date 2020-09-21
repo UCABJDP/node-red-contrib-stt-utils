@@ -36,9 +36,13 @@ module.exports = function(RED) {
 			//Create empty message to place audiodata in
 			node.msg = {};
 			if(data.speech.start || data.speech.state){
+				node.status({fill:"grey",shape:"dot",text:"Utterance Ongoing"});
+				
 				node.msg.payload = data.audioData;
 				node.send(node.msg);
 			} else if (data.speech.end) {
+				node.status({});
+				
 				node.msg.payload = data.audioData;
 				node.msg.complete = true;
 				node.send(node.msg);

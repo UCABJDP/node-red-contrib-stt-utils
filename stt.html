@@ -3,7 +3,16 @@
         category: 'function',
         color: '#a6bbcf',
         defaults: {
-            name: {value:""}
+            name: {value:""},
+			model: {value:"", required: true},
+			scorer: {value:"", required: false},
+			beam: {value: "", requried: false, validate: function(data){
+				return (data == "") || (parseInt(data)>0);
+			}},
+			timeout: {value: "5000", validate: function(data){
+				return (data == "") || (parseInt(data)>0);
+			}},
+			single: {value: false}
         },
         inputs:1,
         outputs:1,
@@ -27,9 +36,18 @@
         <label for="node-input-scorer"><i class="fa fa-tag"></i> Scorer Filepath</label>
         <input type="text" id="node-input-scorer" placeholder="">
     </div>
-	Model file path
-	Scorer file path
-	Single Buffer or Series?
+	<div class="form-row">
+		<label for="node-input-beam"><i class="icon-tag"></i> Beam Width</label>
+		<input type="number" id="node-input-beam">
+	</div>
+	<div class="form-row">
+		<label for="node-input-single"><i class="icon-tag"></i> Single Buffer</label>
+		<input type="checkbox" id="node-input-single">
+	</div>
+	<div class="form-row">
+		<label for="node-input-timeout"><i class="icon-tag"></i> Timeout</label>
+		<input type="number" id="node-input-timeout">
+	</div>
 </script>
 
 <script type="text/html" data-help-name="stt">
