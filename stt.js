@@ -12,37 +12,6 @@ module.exports = function(RED) {
 		
 		//console.log(config);
 		
-		//Attempt to create Model, and Scorer if used, throw errors
-		//Also add a note about filepaths if the errors matches the error an invalid filepath throws
-		try {
-			console.log("Model Enabled");
-			Model = new Deepspeech.Model(config.model);
-			
-			if (config.beam !=""){
-				Model.setBeamWidth(parseInt(config.beam));
-			}
-			
-			console.log("Beam Width: "+Model.beamWidth());
-			console.log("Sample Rate: "+Model.sampleRate());
-		} catch (err){
-			let filepathstatus = (err == "CreateModel failed: Failed to initialize memory mapped model. (0x3000)") ? " Please check model filepath.": ""
-			node.error("Error: "+err+filepathstatus);
-		}
-		
-		if ((config.scorer != "") && (Model != null)){
-			console.log("Scorer Enabled");
-			try {
-				Model.enableExternalScorer(config.scorer);
-			} catch (err){
-				let filepathstatus = (err == "EnableExternalScorer failed: Invalid scorer file. (0x2002)") ? " Please check scorer filepath.": ""
-				node.error("Error: "+err+filepathstatus);
-			}	
-		}
-		
-		if (!config.single){
-			Stream = Model.createStream();
-		}
-		
 		function pushSTT(){
 			//Prep message, mark as decoding
 			node.msg = {};
@@ -59,6 +28,40 @@ module.exports = function(RED) {
 		}
 	
         node.on('input', function(msg) {
+			//Model creation moved to first on first data event to prevent crash loops in resource limited enviroments
+			if (Model == null){
+				//Attempt to create Model, and Scorer if used, throw errors
+				//Also add a note about filepaths if the errors matches the error an invalid filepath throws
+				try {
+					console.log("Model Enabled");
+					Model = new Deepspeech.Model(config.model);
+					
+					if (config.beam !=""){
+						Model.setBeamWidth(parseInt(config.beam));
+					}
+					
+					console.log("Beam Width: "+Model.beamWidth());
+					console.log("Sample Rate: "+Model.sampleRate());
+				} catch (err){
+					let filepathstatus = (err == "CreateModel failed: Failed to initialize memory mapped model. (0x3000)") ? " Please check model filepath.": ""
+					node.error("Error: "+err+filepathstatus);
+				}
+				
+				if ((config.scorer != "") && (Model != null)){
+					console.log("Scorer Enabled");
+					try {
+						Model.enableExternalScorer(config.scorer);
+					} catch (err){
+						let filepathstatus = (err == "EnableExternalScorer failed: Invalid scorer file. (0x2002)") ? " Please check scorer filepath.": ""
+						node.error("Error: "+err+filepathstatus);
+					}	
+				}
+				
+				if (!config.single){
+					Stream = Model.createStream();
+				}
+			}
+			
 			//Check input is a buffer, do not continue of it is not
 			if(!Buffer.isBuffer(msg.payload)){node.error("Error: Input must be a buffer."); return;}
 			if(Model == null){node.error("Error: Model not created, please check debug for initialisation errors."); return;}
@@ -73,9 +76,11 @@ module.exports = function(RED) {
 				node.status({});
 				node.send(node.msg);
 			} else {
-				//If the timeout has not yet been created or has been destroyed, create it, otherwise refresh it
-				if((timeout == null) || (timeout._destroyed)){timeout = setTimeout(pushSTT, parseInt(config.timeout));}
-				else {timeout.refresh();}
+				if (config.timeout != ""){
+					//If the timeout has not yet been created or has been destroyed, create it, otherwise refresh it
+					if((timeout == null) || (timeout._destroyed)){timeout = setTimeout(pushSTT, parseInt(config.timeout));}
+					else {timeout.refresh();}
+				}
 				
 				//Mark the node as having data stored
 				node.status({fill:"grey",shape:"dot",text:"Data Received"});

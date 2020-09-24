@@ -7,6 +7,8 @@ module.exports = function(RED) {
 	
 	//Map Config to VAD.Mode
 	const modemap = {"Normal": VAD.Mode.NORMAL, "LowBitrate": VAD.Mode.LOW_BITRATE, "Aggressive": VAD.Mode.AGGRESSIVE, "VeryAggressive": VAD.Mode.VERY_AGGRESSIVE};
+	
+	let timeout = null;
 		
     function NodeRedVad(config) {
         RED.nodes.createNode(this,config);
@@ -31,8 +33,21 @@ module.exports = function(RED) {
 			inputStream.push(msg.payload);
         });
 		
+		function pushTimeout(){
+			node.status({});
+				
+			node.msg.payload = Buffer.alloc(0);
+			node.msg.complete = true;
+			node.send(node.msg);
+		}
+		
 		inputStream.pipe(vadStream).on("data",function(data){
-			//TODO: TIMEOUT, option to send either the filtered audio or the entire message
+			if(config.timeout != ""){
+				//Timeout
+				if((timeout == null) || (timeout._destroyed)){timeout = setTimeout(pushTimeout, parseInt(config.timeout));}
+				else {timeout.refresh();}
+			}
+			
 			//Create empty message to place audiodata in
 			node.msg = {};
 			if(data.speech.start || data.speech.state){

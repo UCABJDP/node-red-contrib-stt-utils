@@ -1,0 +1,91 @@
+<script type="text/javascript">
+    RED.nodes.registerType('pcm-resample',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+			inrate: {value: "44100", requried: true, validate: function(data){
+				return (parseInt(data)>0);
+			}},
+			outrate: {value: "16000", requried: true, validate: function(data){
+				return (parseInt(data)>0);
+			}},
+			channels: {value: "1", requried: true, validate: function(data){
+				return (parseInt(data)>0);
+			}},
+			quality: {value: "5"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "trigger.png",
+        label: function() {
+            return this.name||"pcm-resample";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="pcm-resample">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+	<div class="form-row">
+		<label for="node-input-inrate"><i class="icon-tag"></i> Input Rate</label>
+		<input type="number" id="node-input-inrate">
+	</div>
+	<div class="form-row">
+		<label for="node-input-outrate"><i class="icon-tag"></i> Output Rate</label>
+		<input type="number" id="node-input-outrate">
+	</div>
+	<div class="form-row">
+		<label for="node-input-channels"><i class="icon-tag"></i> Channels</label>
+		<input type="number" id="node-input-channels">
+	</div>
+	<div class="form-row">
+		<label for="node-input-quality"><i class="icon-tag"></i> Quality</label>
+		<select id="node-input-quality">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+		</select>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="pcm-resample">
+    <p>NodeRED adaptor for the speex-resampler module. Resamples PCM audio to different sample rates. Accepts 16-bit signed-int PCM audio only.</p>
+
+	<h3>Inputs</h3>
+		<dl class="message-properties">
+			<dt>payload
+				<span class="property-type">buffer</span>
+			</dt>
+			<dd>Buffer containing the input PCM audio to resample.</dd>
+		</dl>
+
+	 <h3>Outputs</h3>
+		 <ol class="node-ports">
+			 <li>Standard output
+				 <dl class="message-properties">
+					 <dt>payload <span class="property-type">buffer</span></dt>
+					 <dd>Buffer containing the resampled audio.</dd>
+				 </dl>
+			 </li>
+		 </ol>
+
+	<h3>Details</h3>
+		<p>Channels: The number of interleaved channels in the </p>
+		<p>Input Rate: The sample rate of the input audio.</p>
+		<p>Output Rate: The rate to resample the audio to.</p>
+		<p>Quality: The quality for the resampled audio, 1 being the poorest and 10 being the highest. Higher quality takes longer to resample.</p>
+	<h3>References</h3>
+		<ul>
+			<li><a href="https://github.com/geekuillaume/node-speex-resampler">speex-resample</a> - the github repository for the speex-resample module</li>
+		</ul>
+</script>

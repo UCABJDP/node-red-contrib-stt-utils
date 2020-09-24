@@ -6,6 +6,9 @@
             name: {value:""},
 			mode: {value:"Normal"},
 			samplerate: {value:"16000"},
+			timeout: {value: "5000", validate: function(data){
+				return (data == "") || (parseInt(data)>0);
+			}},
 			debounce: {value: 1000, required: true, validate: function(data){return (parseInt(data) && (parseInt(data)>0));}}
         },
         inputs:1,
@@ -44,6 +47,10 @@
 		<label for="node-input-debounce"><i class="icon-tag"></i> Debounce (ms)</label>
 		<input type="number" id="node-input-debounce" min="0" step="1">
 	</div>
+	<div class="form-row">
+		<label for="node-input-timeout"><i class="icon-tag"></i> Timeout</label>
+		<input type="number" id="node-input-timeout">
+	</div>
 </script>
 
 <script type="text/html" data-help-name="node-vad">
@@ -54,7 +61,7 @@
 			<dt>payload
 				<span class="property-type">buffer</span>
 			</dt>
-			<dd>Buffer containing the audio to be filtered, in 16-bit PCM mono-channel form.</dd>
+			<dd>Buffer containing the audio to be filtered.</dd>
 		</dl>
 
 	 <h3>Outputs</h3>
@@ -64,16 +71,18 @@
 					 <dt>payload <span class="property-type">buffer</span></dt>
 					 <dd>Buffer containing the converted audio.</dd>
 					 <dt class="optional">complete<span class="property-type">boolean</span></dt>
-					 <dd>Emitted only on the end of an utterance or on timeout, always true. For use with the join node, or similar.</dd>
+					 <dd>Emitted only on the end of an utterance or on timeout, always True. For use with the join node, or similar.</dd>
 				 </dl>
 			 </li>
 		 </ol>
 
 	<h3>Details</h3>
-		<p>If the input or output type is is of a 32-bit float, the signed and bitdepth options will be ignored, as those options are only relevant to integer conversions.</p>
-		<p>The default endianness of the OS is used for conversion.</p>
+		<p>VAD Mode: Mode of operation for node-vad, please see references. Different settings more or less aggressively filters out silence.</p>
+		<p>Sample Rate: The sample rate of the audio being processed. Required.</p>
+		<p>Debounce: The amount of silence required to mark the end of an utterance. Required.</p>
+		<p>Timeout: If not empty, will automatically sent a True msg.complete after a given amount of milliseconds. Optional.</p>
 	<h3>References</h3>
 		<ul>
-			<li><a href="https://github.com/raymond-h/pcm-format">pcm-audio</a> - the github repository for the pcm-format module</li>
+			<li><a href="https://github.com/Snirpo/node-vad">node-vad</a> - the github repo for the node-vad module</li>
 		</ul>
 </script>

@@ -51,14 +51,14 @@
 </script>
 
 <script type="text/html" data-help-name="stt">
-    <p>NodeRED adaptor for WHAT IS THIS</p>
+    <p>NodeRED adaptor for Mozilla deepspeech, transcribes audio to text when given buffers containing mono-channel 16-bit audio at 16000 Hz sample rate (as of the 0.8.0 release of the model file).</p>
 
 	<h3>Inputs</h3>
 		<dl class="message-properties">
 			<dt>payload
 				<span class="property-type">buffer</span>
 			</dt>
-			<dd>Buffer containing the audio to be filtered, in 16-bit PCM mono-channel form.</dd>
+			<dd>Buffer containing the audio to be filtered.</dd>
 		</dl>
 
 	 <h3>Outputs</h3>
@@ -72,10 +72,19 @@
 		 </ol>
 
 	<h3>Details</h3>
-		EXPLAIN FINICKINESS
+		<p>The type of model file (either .tflite or .pbmm) required depends on the platform the Node-RED environment is being run on, please see references for more details. The model files are not included in the package and must be downloaded separately.</p>
+		<p>Note: The sample rate and beam width for the model is displayed in the system terminal when the model is created.</p>
+		<p>WARNING: Use of the scorer in memory-limited environments may halt the Node-RED runtime. The model is created on first data rather than node load to prevent the Node-RED runtime from halting on load due to this reason.</p>
+		<p>Model: Filepath to a model file. Required.</p>
+		<p>Scorer: Filepath to a scorer file. Optional.</p>
+		<p>Beam Width: If not empty, will override the default beam width for the model, higher values increase decoding time and performance. Optional.</p>
+		<p>Single Buffer: If enabled, will process audio immediately. If not enabled, will process audio upon a True msg.complete or timeout. Use if giving the node entire files at once, as opposed to piecemeal. Optional.</p>
+		<p>Timeout: If not empty, will automatically process audio streams after a given number of milliseconds. Optional.</p>
 	<h3>References</h3>
-		REFERE TO DEEPSPEECH
 		<ul>
-			<li><a href="https://github.com/raymond-h/pcm-format">pcm-audio</a> - the github repository for the pcm-format module</li>
+			<li><a href="https://github.com/mozilla/DeepSpeech/releases/latest">deepspeech models</a> - release page for the deepspeech model files</li>
+			<li><a href="https://deepspeech.readthedocs.io/?badge=latest">deepspeech docs</a> - documentation for deepspeech</li>
+			<li><a href="https://deepspeech.readthedocs.io/en/latest/SUPPORTED_PLATFORMS.html">platforms</a> - supported platforms for deepspeech</li>
+			<li><a href="https://github.com/mozilla/DeepSpeech">deepspeech repo</a> - github repo for deepspeech</li>
 		</ul>
 </script>
