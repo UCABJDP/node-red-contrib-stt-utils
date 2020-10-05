@@ -1,4 +1,6 @@
 module.exports = function(RED) {
+	"use strict";
+	
 	//Require 
 	const {SpeexResamplerTransform} = require('speex-resampler');
 	const {Readable} = require('stream');

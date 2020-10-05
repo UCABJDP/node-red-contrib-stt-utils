@@ -1,6 +1,9 @@
 module.exports = function(RED) {
+	"use strict";
+	
 	//Require 
 	const Deepspeech = require('deepspeech');
+	const fs = require('fs');
 	
     function STT(config) {
         RED.nodes.createNode(this,config);
@@ -34,6 +37,15 @@ module.exports = function(RED) {
 				//Also add a note about filepaths if the errors matches the error an invalid filepath throws
 				try {
 					console.log("Model Enabled");
+					
+					//Check that the model file exists and is accessible
+					fs.accessSync(config.model, fs.constants.F_OK | fs.constants.R_OK);
+					
+					//Check that the filepath is actually a file and not a directory
+					if (!fs.statSync(config.model).isFile()){
+						throw new Error("Model path given is not a file.");
+					}
+
 					Model = new Deepspeech.Model(config.model);
 					
 					if (config.beam !=""){
@@ -49,6 +61,15 @@ module.exports = function(RED) {
 				
 				if ((config.scorer != "") && (Model != null)){
 					console.log("Scorer Enabled");
+					
+					//Check that the scorer file exists and is accessible
+					fs.accessSync(config.scorer, fs.constants.F_OK | fs.constants.R_OK);
+					
+					//Check that the filepath is actually a file and not a directory
+					if (!fs.statSync(config.scorer).isFile()){
+						throw new Error("Scorer path given is not a file.");
+					}
+					
 					try {
 						Model.enableExternalScorer(config.scorer);
 					} catch (err){
@@ -87,6 +108,7 @@ module.exports = function(RED) {
 				Stream.feedAudioContent(msg.payload);
 				
 				if(msg.complete == true){
+					clearTimeout(timeout);
 					pushSTT();
 				}
 			}

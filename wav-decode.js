@@ -1,4 +1,6 @@
 module.exports = function(RED) {
+	"use strict";
+	
 	//Require 
 	const wav = require('wav');
 	const {Readable} = require('stream');
@@ -11,7 +13,7 @@ module.exports = function(RED) {
 		let wavReader = null;
 		
 		//Stream allow incoming messages to be piped into the decoder
-		const inputStream = new Readable({
+		let inputStream = new Readable({
 			read(size) {}
 		});
 	

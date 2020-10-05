@@ -1,4 +1,6 @@
 module.exports = function(RED) {
+	"use strict";
+	
 	//Require 
 	const PCM = require('pcm-format');
 	const {Readable} = require('stream');
@@ -10,7 +12,7 @@ module.exports = function(RED) {
         let node = this;
 		
 		//Stream allow incoming messages to be piped into the decoder
-		const inputStream = new Readable({
+		let inputStream = new Readable({
 			read(size) {}
 		});
 		
